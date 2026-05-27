@@ -696,13 +696,17 @@ export default function App() {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3500)
   }, [])
 
-  // Live agent feed
+  // Live agent feed — prepend with unique timestamped id to prevent key collisions
   useEffect(() => {
     const t = setInterval(() => {
-      if (liveIdx.current < liveAgentFeed.length) {
-        setAgents(prev => [liveAgentFeed[liveIdx.current], ...prev])
-        liveIdx.current++
-      }
+      const feedItem = liveAgentFeed[liveIdx.current % liveAgentFeed.length]
+      const uniqueItem = { ...feedItem, id: `${feedItem.id}-${Date.now()}` }
+      setAgents(prev => {
+        // Cap at 12 cards to prevent unbounded growth
+        const next = [uniqueItem, ...prev]
+        return next.slice(0, 12)
+      })
+      liveIdx.current++
     }, 10000)
     return () => clearInterval(t)
   }, [])
@@ -752,14 +756,9 @@ export default function App() {
             <span className="lattice-tenant">Mountainside Power & Light</span>
           </div>
 
-          {/* Workload switcher */}
+          {/* Workload switcher — single active workload */}
           <div className="topbar-workloads">
             <div className="workload-pill active">RateCase Navigator</div>
-            {['StormCommand', 'GridGate', 'EmberShield'].map(w => (
-              <div key={w} className="workload-pill inactive">
-                {w} <span className="soon">soon</span>
-              </div>
-            ))}
           </div>
 
           <div className="topbar-actions">
