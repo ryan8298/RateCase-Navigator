@@ -7,6 +7,9 @@ import {
 
 // ─── tiny helpers ────────────────────────────────────────────────────────────
 const statusOrder: DRStatus[] = ['Intake', 'Classifying', 'Drafting', 'In Review', 'Filed']
+// Pipeline stepper: display labels and their matching DR status
+const STEP_LABELS = ['Intake', 'Classify', 'Draft', 'Review', 'Filed'] as const
+const STEP_TO_STATUS: DRStatus[] = ['Intake', 'Classifying', 'Drafting', 'In Review', 'Filed']
 
 function next(s: DRStatus): DRStatus | null {
   const i = statusOrder.indexOf(s)
@@ -700,6 +703,7 @@ export default function App() {
   const [showChat, setShowChat] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
   const [activeStep, setActiveStep] = useState(2) // "Drafting" step active
+  const [stepFilter, setStepFilter] = useState<DRStatus | null>(null) // null = show all
   const liveIdx = useRef(0)
   const toastId = useRef(0)
   const actEndRef = useRef<HTMLDivElement>(null)
@@ -751,8 +755,10 @@ export default function App() {
     toast('Commitment marked complete', 'success')
   }, [toast])
 
-  // Step counts
-  const stepCounts = statusOrder.map(s => drs.filter(d => d.status === s).length)
+  // Step counts — keyed to actual DR statuses via STEP_TO_STATUS
+  const stepCounts = STEP_TO_STATUS.map(s => drs.filter(d => d.status === s).length)
+  // Filtered DR list for the tracker panel
+  const visibleDRs = stepFilter ? drs.filter(d => d.status === stepFilter) : drs
   const open = drs.filter(d => d.status !== 'Filed').length
   const overdue = drs.filter(d => d.daysUntilDue === 'OVERDUE').length
   const dueWeek = drs.filter(d => typeof d.daysUntilDue === 'number' && d.daysUntilDue <= 7).length
@@ -811,20 +817,27 @@ export default function App() {
           </div>
         </div>
 
-        {/* Workflow stepper */}
+        {/* Workflow stepper — clicking a step filters the DR tracker to that stage */}
         <div className="workflow-stepper">
           <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '.07em', textTransform: 'uppercase', marginRight: 12, flexShrink: 0 }}>RATE CASE PIPELINE</span>
-          {(['Intake', 'Classify', 'Draft', 'Review', 'File'] as const).map((label, i) => {
-            const s = statusOrder[i]
+          {STEP_LABELS.map((label, i) => {
+            const s = STEP_TO_STATUS[i]
             const count = stepCounts[i]
             const completed = i < activeStep
             const active = i === activeStep
+            const isFiltered = stepFilter === s
             return (
               <div key={label} className="step">
                 <div
                   className={`step-inner ${active ? 'active' : ''} ${completed ? 'completed' : ''}`}
-                  onClick={() => setActiveStep(i)}
-                  title={`Filter by ${s}`}
+                  onClick={() => {
+                    setActiveStep(i)
+                    // Toggle: clicking active filter clears it
+                    setStepFilter(prev => prev === s ? null : s)
+                    if (activeTab !== 'tracker') setActiveTab('tracker')
+                  }}
+                  title={isFiltered ? 'Click to clear filter' : `Filter tracker to ${label} stage`}
+                  style={{ cursor: 'pointer', outline: isFiltered ? '2px solid var(--blue)' : 'none', outlineOffset: 2, borderRadius: 6 }}
                 >
                   <div className="step-num">{completed ? '✓' : i + 1}</div>
                   <div className="step-label">{label}</div>
@@ -834,6 +847,14 @@ export default function App() {
               </div>
             )
           })}
+          {stepFilter && (
+            <button
+              onClick={() => setStepFilter(null)}
+              style={{ marginLeft: 10, fontSize: 10, padding: '3px 9px', background: 'rgba(56,189,248,.12)', border: '1px solid var(--blue)', borderRadius: 5, color: 'var(--blue)', cursor: 'pointer', fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}
+            >
+              ✕ Clear filter
+            </button>
+          )}
         </div>
 
         {/* KPI bar */}
@@ -879,6 +900,12 @@ export default function App() {
                 <span>Status</span>
                 <span>Confidence</span>
               </div>
+              {stepFilter && (
+                <div style={{ padding: '5px 12px', background: 'rgba(56,189,248,.07)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 11 }}>
+                  <span style={{ color: 'var(--blue)', fontWeight: 600 }}>Showing: {stepFilter} — {visibleDRs.length} DR{visibleDRs.length !== 1 ? 's' : ''}</span>
+                  <button onClick={() => setStepFilter(null)} style={{ fontSize: 10, color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Show all →</button>
+                </div>
+              )}
               <div className="panel-body">
                 {visibleDRs.map(dr => (
                   <div
