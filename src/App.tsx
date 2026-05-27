@@ -316,23 +316,37 @@ function DRDrawer({
         </div>
 
         {/* Footer actions */}
-        <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, flexWrap: 'wrap', background: 'var(--navy-700)', flexShrink: 0 }}>
-          {nextStatus && dr.status !== 'Filed' && (
-            <button className="btn btn-primary" onClick={handleAdvance}>
-              Advance → {nextStatus}
-            </button>
+        <div style={{ padding: '12px 18px', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, flexWrap: 'wrap', background: 'var(--navy-700)', flexShrink: 0, alignItems: 'center' }}>
+          {dr.status === 'Filed' ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--green)', fontWeight: 700 }}>
+                <span style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--green)', color: '#07111e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>✓</span>
+                Filed — No further action required
+              </span>
+              <button className="btn btn-ghost" onClick={() => toast(`${dr.id} exported to PDF`, 'info')} style={{ marginLeft: 'auto' }}>
+                Export PDF
+              </button>
+            </div>
+          ) : (
+            <>
+              {nextStatus && (
+                <button className="btn btn-primary" onClick={handleAdvance}>
+                  Advance → {nextStatus}
+                </button>
+              )}
+              {dr.status === 'In Review' && (
+                <button className="btn btn-success" onClick={() => { onUpdate(dr.id, { status: 'Filed', confidence: 100 }); toast(`${dr.id} filed successfully`, 'success'); onClose() }}>
+                  ✓ Mark as Filed
+                </button>
+              )}
+              <button className="btn btn-secondary" onClick={() => toast(`${dr.id} sent for review`, 'info')}>
+                Request SME Review
+              </button>
+              <button className="btn btn-ghost" onClick={() => toast(`${dr.id} exported to PDF`, 'info')}>
+                Export PDF
+              </button>
+            </>
           )}
-          {dr.status === 'In Review' && (
-            <button className="btn btn-success" onClick={() => { onUpdate(dr.id, { status: 'Filed', confidence: 100 }); toast(`${dr.id} filed successfully`, 'success'); onClose() }}>
-              ✓ Mark as Filed
-            </button>
-          )}
-          <button className="btn btn-secondary" onClick={() => toast(`${dr.id} sent for review`, 'info')}>
-            Request SME Review
-          </button>
-          <button className="btn btn-ghost" onClick={() => toast(`${dr.id} exported to PDF`, 'info')}>
-            Export PDF
-          </button>
         </div>
       </div>
     </div>
@@ -675,6 +689,7 @@ function ChatPanel({ drs, commitments, onClose }: { drs: DR[]; commitments: Comm
 export default function App() {
   const [drs, setDRs] = useState<DR[]>(initialDRs)
   const [agents, setAgents] = useState<AgentCard[]>(initialAgents)
+  const [actedCards, setActedCards] = useState<Set<string>>(new Set())
   const [commitments, setCommitments] = useState<Commitment[]>(initialCommitments)
   const [activeTab, setActiveTab] = useState<'tracker' | 'audit'>('tracker')
   const [selectedDR, setSelectedDR] = useState<DR | null>(null)
@@ -865,7 +880,7 @@ export default function App() {
                 <span>Confidence</span>
               </div>
               <div className="panel-body">
-                {drs.map(dr => (
+                {visibleDRs.map(dr => (
                   <div
                     key={dr.id}
                     className={`dr-row ${dr.daysUntilDue === 'OVERDUE' ? 'overdue' : ''} ${selectedDR?.id === dr.id ? 'selected' : ''}`}
@@ -938,19 +953,26 @@ export default function App() {
                   <div className="agent-body">{a.message}</div>
                   {a.actionLabel && a.actionDRId && (
                     <div className="agent-action">
-                      <button
-                        className={`btn btn-sm ${a.level === 'risk' ? 'btn-success' : 'btn-primary'}`}
-                        onClick={() => {
-                          if (a.actionLabel === 'Approve Extension') {
-                            updateDR(a.actionDRId!, { status: 'In Review' })
-                            toast(`Extension for ${a.actionDRId} approved — Sierra Club notified`, 'success')
-                          } else if (a.actionLabel === 'Escalate') {
-                            toast(`${a.actionDRId} escalated to VP Regulatory`, 'warn')
-                          }
-                        }}
-                      >
-                        {a.actionLabel}
-                      </button>
+                      {actedCards.has(a.id) ? (
+                        <span style={{ fontSize: 11, color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+                          ✓ {a.actionLabel === 'Approve Extension' ? 'Extension approved — Sierra Club notified' : 'Escalated to VP Regulatory'}
+                        </span>
+                      ) : (
+                        <button
+                          className={`btn btn-sm ${a.level === 'risk' ? 'btn-success' : 'btn-primary'}`}
+                          onClick={() => {
+                            setActedCards(prev => new Set(prev).add(a.id))
+                            if (a.actionLabel === 'Approve Extension') {
+                              updateDR(a.actionDRId!, { status: 'In Review' })
+                              toast(`Extension for ${a.actionDRId} approved — Sierra Club notified`, 'success')
+                            } else if (a.actionLabel === 'Escalate') {
+                              toast(`${a.actionDRId} escalated to VP Regulatory — Teams message sent`, 'warn')
+                            }
+                          }}
+                        >
+                          {a.actionLabel}
+                        </button>
+                      )}
                       <button className="btn btn-ghost btn-sm" onClick={() => setSelectedDR(drs.find(d => d.id === a.actionDRId) || null)}>
                         View DR
                       </button>

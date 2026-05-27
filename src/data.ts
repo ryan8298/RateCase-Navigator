@@ -295,6 +295,17 @@ export const initialAgents: AgentCard[] = [
     actionLabel: 'Approve Extension',
     actionDRId: 'SC-DR-0012',
   },
+  {
+    id: 'ag5',
+    name: 'Deadline Risk Agent',
+    icon: '⚠️',
+    tags: ['workflow-orchestration', 'agent-dispatch'],
+    time: '09:23:42',
+    level: 'warn',
+    message: 'AG-DR-0094 (Executive Compensation) due in 3 days. Confidence at 70% — below 80% threshold. Dana Torres notified via Teams.\n\nPriority escalation to VP Regulatory recommended to unblock HR data delivery.',
+    actionLabel: 'Escalate',
+    actionDRId: 'AG-DR-0094',
+  },
 ];
 
 export const liveAgentFeed: AgentCard[] = [
@@ -327,14 +338,12 @@ export const liveAgentFeed: AgentCard[] = [
   },
   {
     id: 'live4',
-    name: 'Deadline Risk Agent',
-    icon: '⚠️',
-    tags: ['workflow-orchestration', 'agent-dispatch'],
-    time: '09:23:42',
-    level: 'warn',
-    message: 'AG-DR-0094 (Executive Compensation) due in 3 days. Confidence at 70% — below 80% threshold. Dana Torres notified via Teams. Priority escalation recommended.',
-    actionLabel: 'Escalate',
-    actionDRId: 'AG-DR-0094',
+    name: 'Pattern Detection Agent',
+    icon: '🧠',
+    tags: ['consensus-voting', 'docket-watch'],
+    time: '09:25:18',
+    level: 'info',
+    message: 'New ALJ ruling ingested: Docket 25-0892-RC — PUC Staff cost-of-capital benchmark set at 4.15% risk-free rate. Directly supports MPL position in AG-DR-0089. Added to Sarah Chen’s SharePoint evidence queue.',
   },
 ];
 
