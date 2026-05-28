@@ -1,16 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RateCase Navigator — Mountainside Power & Light</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RateCase Navigator — Mountainside Power &amp; Light</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="app-shell">
+
+  <!-- ══════════════════ TOP BAR ══════════════════ -->
+  <header id="topbar">
+    <div class="topbar-brand">
+      <!-- Echelix Lattice SVG mark -->
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-label="Echelix Lattice">
+        <rect x="1"  y="1"  width="7" height="7" rx="1" fill="#38BDF8"/>
+        <rect x="10" y="1"  width="7" height="7" rx="1" fill="#38BDF8" opacity=".55"/>
+        <rect x="19" y="1"  width="4" height="7" rx="1" fill="#38BDF8" opacity=".25"/>
+        <rect x="1"  y="10" width="7" height="7" rx="1" fill="#38BDF8" opacity=".55"/>
+        <rect x="10" y="10" width="7" height="7" rx="1" fill="#38BDF8" opacity=".85"/>
+        <rect x="19" y="10" width="4" height="7" rx="1" fill="#38BDF8" opacity=".45"/>
+        <rect x="1"  y="19" width="7" height="4" rx="1" fill="#38BDF8" opacity=".25"/>
+        <rect x="10" y="19" width="7" height="4" rx="1" fill="#38BDF8" opacity=".45"/>
+        <rect x="19" y="19" width="4" height="4" rx="1" fill="#38BDF8" opacity=".65"/>
+      </svg>
+      <div>
+        <div class="brand-name">ECHELIX LATTICE</div>
+        <div class="brand-sub">RateCase Navigator</div>
+      </div>
+    </div>
+    <div class="topbar-divider"></div>
+    <span style="font-size:13px;color:rgba(255,255,255,0.7);white-space:nowrap;">Mountainside Power &amp; Light</span>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-meta">
+      <div class="topbar-countdown">Final Order: <strong><span id="topbar-countdown-val">—</span></strong></div>
+      <div class="topbar-divider"></div>
+      <div class="role-switcher">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <select id="role-select">
+          <option value="director">Regulatory Affairs Director</option>
+          <option value="counsel">Rate Case Counsel</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════ MAIN AREA ══════════════════ -->
+  <div id="main-area">
+
+    <!-- ── LEFT NAV ── -->
+    <nav id="left-nav">
+      <div class="nav-section-label">Workspaces</div>
+
+      <div class="nav-item" data-section="proceedings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        My Proceedings
+        <span class="nav-badge">3</span>
+      </div>
+
+      <div class="nav-item" data-section="active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Active Proceeding
+      </div>
+
+      <div class="nav-item" data-section="discovery">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Discovery
+        <span class="nav-badge">18</span>
+      </div>
+
+      <div class="nav-item" data-section="commitments">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Commitments
+        <span class="nav-badge">4</span>
+      </div>
+
+      <div class="nav-item" data-section="calendar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Filings Calendar
+      </div>
+
+      <div class="nav-item" data-section="witnesses">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Witnesses
+      </div>
+
+      <div class="nav-item" data-section="reports">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </div>
+
+      <div class="nav-footer">
+        <div class="nav-countdown-box">
+          <div class="nav-countdown-label">Days to Final Order</div>
+          <div class="nav-countdown-value" id="nav-countdown">—</div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ══════════════════ CONTENT AREA ══════════════════ -->
+    <div id="content-area">
+
+      <!-- ─────────────────── VIEW: MY PROCEEDINGS ─────────────────── -->
+      <section class="view" id="view-proceedings">
+        <div class="section-header">
+          <div>
+            <div class="section-title">My Proceedings</div>
+            <div class="section-subtitle">Active and historical rate cases — Mountainside Power &amp; Light regulatory affairs team</div>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-secondary btn-sm">Export</button>
+            <button class="btn btn-primary btn-sm">+ Add Proceeding</button>
+          </div>
+        </div>
+
+        <div style="padding:8px 32px 0;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--warm-grey);margin-top:16px;">Active</div>
+        <div class="proceedings-grid" id="proceedings-grid"></div>
+      </section>
+
+      <!-- ─────────────────── VIEW: ACTIVE PROCEEDING ─────────────────── -->
+      <section class="view" id="view-active">
+
+        <!-- Breadcrumb strip -->
+        <div class="proc-context-strip">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>All Proceedings /</span>
+          <strong id="active-docket-strip">PUC Docket 25-1142 · General Rate Case · Test Year 2025</strong>
+        </div>
+
+        <!-- Proceeding header -->
+        <div class="active-proc-header">
+          <div>
+            <div class="active-proc-docket" id="active-docket">PUC Docket No. 25-1142</div>
+            <div class="active-proc-title" id="active-title">General Rate Case &middot; Test Year 2025 — Mountainside Power &amp; Light</div>
+          </div>
+          <div class="active-proc-meta">
+            <div class="active-proc-meta-item">Judge: <strong id="active-judge">Hon. R. Castellano</strong></div>
+            <div class="active-proc-meta-item">Phase: <strong><span id="active-phase">Intervenor Testimony</span></strong></div>
+            <div class="active-proc-meta-item">Jurisdiction: <strong id="active-court">Texas PUC</strong></div>
+          </div>
+          <span class="spill spill-hearing" style="margin-left:auto;flex-shrink:0;">Active</span>
+        </div>
+
+        <!-- Metrics bar -->
+        <div class="metrics-bar">
+          <div class="metric-item">
+            <div class="metric-value" id="metric-countdown">—</div>
+            <div class="metric-label">Days to Final Order</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">18</div>
+            <div class="metric-label">Open Discovery Requests</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value risk">4</div>
+            <div class="metric-label">At-Risk Commitments</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">12 / 23</div>
+            <div class="metric-label">Testimony Sections Complete</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-value">6</div>
+            <div class="metric-label">Active Witnesses</div>
+          </div>
+        </div>
+
+        <!-- Inner tabs -->
+        <div class="inner-tabs">
+          <div class="inner-tab active" data-tab="commitments">Commitments</div>
+          <div class="inner-tab" data-tab="discovery">Discovery</div>
+          <div class="inner-tab" data-tab="filings">Filings</div>
+          <div class="inner-tab" data-tab="testimony">Testimony</div>
+          <div class="inner-tab" data-tab="witnesses">Witnesses</div>
+        </div>
+
+        <!-- Active body: main content + right rail -->
+        <div class="active-body">
+          <div class="active-main">
+
+            <!-- COMMITMENTS panel -->
+            <div class="inner-tab-panel active" id="itab-commitments">
+              <div class="data-table-wrap">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-family:var(--font-serif);font-size:16px;color:var(--navy);">Commitment Register</div>
+                  <div style="display:flex;gap:8px;">
+                    <button class="btn btn-secondary btn-sm">Add Commitment</button>
+                    <button class="btn btn-primary btn-sm">Export Register</button>
+                  </div>
+                </div>
+                <table class="data-table">
+                  <thead><tr>
+                    <th>Commitment</th><th>Docket</th><th>Category</th>
+                    <th>Status</th><th>Due Date</th><th>Responsible</th>
+                  </tr></thead>
+                  <tbody id="commitments-tbody"></tbody>
+                </table>
+                <div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);">Showing commitments for active proceeding · 247 total in register</div>
+              </div>
+            </div>
+
+            <!-- DISCOVERY panel -->
+            <div class="inner-tab-panel" id="itab-discovery">
+              <div class="data-table-wrap">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-family:var(--font-serif);font-size:16px;color:var(--navy);">Discovery Register</div>
+                  <button class="btn btn-primary btn-sm" onclick="addAutoDraftedDR()">Draft Response (AI)</button>
+                </div>
+                <table class="data-table">
+                  <thead><tr>
+                    <th>DR No.</th><th>Request</th><th>Party</th><th>Due</th><th>Status</th><th>Assigned</th><th>AI</th>
+                  </tr></thead>
+                  <tbody id="inner-dr-tbody"></tbody>
+                </table>
+                <div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);">18 open requests · 14 assigned for AI drafting</div>
+              </div>
+            </div>
+
+            <!-- FILINGS panel -->
+            <div class="inner-tab-panel" id="itab-filings">
+              <div class="data-table-wrap">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-family:var(--font-serif);font-size:16px;color:var(--navy);">Filings &amp; Docket Documents</div>
+                  <button class="btn btn-primary btn-sm">Prepare Filing</button>
+                </div>
+                <table class="data-table">
+                  <thead><tr>
+                    <th>Doc. No.</th><th>Document Title</th><th>Filed By</th>
+                    <th>Date Filed</th><th>Category</th><th>Status</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr><td>25-1142-001</td><td>Application for Rate Increase — General Rate Case, Test Year 2025</td><td>Mountainside P&amp;L</td><td>Jan 6, 2026</td><td>Application</td><td><span class="spill spill-filed">Accepted</span></td></tr>
+                    <tr><td>25-1142-047</td><td>Direct Testimony of J. Patterson — Distribution Capital Expenditures, Schedules D-1 through D-14</td><td>Mountainside P&amp;L</td><td>Mar 3, 2026</td><td>Direct Testimony</td><td><span class="spill spill-filed">Filed</span></td></tr>
+                    <tr><td>25-1142-109</td><td>Commission Order — Extending Discovery Response Deadline for Set 3 Requests</td><td>PUC</td><td>May 2, 2026</td><td>Commission Order</td><td><span class="spill spill-open">Order</span></td></tr>
+                    <tr class="at-risk"><td>25-1142-114</td><td>Intervenor Testimony of Dr. A. Morse (AG Expert) — Cost of Capital and Rate of Return</td><td>Attorney General</td><td>May 15, 2026</td><td>Intervenor Testimony</td><td><span class="spill spill-risk">Needs Response</span></td></tr>
+                    <tr><td>25-1142-118</td><td>Intervenor Testimony of Sierra Club Witness R. Jennings — Environmental Adjustment Mechanisms</td><td>Sierra Club</td><td>May 15, 2026</td><td>Intervenor Testimony</td><td><span class="spill spill-risk">Needs Response</span></td></tr>
+                  </tbody>
+                </table>
+                <div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);">12,447 documents in docket · 4 requiring Company response</div>
+              </div>
+            </div>
+
+            <!-- TESTIMONY panel -->
+            <div class="inner-tab-panel" id="itab-testimony">
+              <div class="data-table-wrap">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-family:var(--font-serif);font-size:16px;color:var(--navy);">Testimony Drafting Workspace</div>
+                  <button class="btn btn-primary btn-sm">Draft Section (AI)</button>
+                </div>
+                <table class="data-table">
+                  <thead><tr>
+                    <th>Section</th><th>Title &amp; Scope</th><th>Witness</th>
+                    <th>Status</th><th>Due</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr onclick="openTestimonyDirect('DIR-01')"><td>DIR-01</td><td>Overview and Qualifications — Background, role, and summary of testimony scope for J. Patterson</td><td>J. Patterson</td><td><span class="spill spill-filed">Filed</span></td><td>Mar 3, 2026</td></tr>
+                    <tr onclick="openTestimonyDirect('DIR-04')"><td>DIR-04</td><td>Capital Expenditure Justification — Distribution infrastructure investments and reliability improvements 2023–2025</td><td>J. Patterson</td><td><span class="spill spill-filed">Filed</span></td><td>Mar 3, 2026</td></tr>
+                    <tr class="at-risk" onclick="openTestimonyDirect('REB-03')"><td>REB-03</td><td>Rebuttal to AG Expert Morse — Cost of capital critique, CAPM methodology defense, comparable company response</td><td>D. Patel</td><td><span class="spill spill-risk">In Draft</span></td><td>Jun 17, 2026</td></tr>
+                    <tr onclick="openTestimonyDirect('REB-05')"><td>REB-05</td><td>Rebuttal to Sierra Club — Depreciation methodology defense, reserve adequacy, treatment of accumulated deferred income taxes</td><td>M. Reyes</td><td><span class="spill spill-open">Not Started</span></td><td>Jun 17, 2026</td></tr>
+                    <tr onclick="openTestimonyDirect('REB-07')"><td>REB-07</td><td>Rebuttal to OPC — Grid modernization prudence, storm hardening cost allocation, Schedule O-4 reconciliation</td><td>R. Cole</td><td><span class="spill spill-open">Not Started</span></td><td>Jun 17, 2026</td></tr>
+                  </tbody>
+                </table>
+                <div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);">12 of 23 sections complete · Rebuttal filing deadline: June 17, 2026</div>
+              </div>
+            </div>
+
+            <!-- WITNESSES panel (inner) -->
+            <div class="inner-tab-panel" id="itab-witnesses">
+              <div class="data-table-wrap">
+                <div style="font-family:var(--font-serif);font-size:16px;color:var(--navy);margin-bottom:14px;">Witness &amp; SME Directory</div>
+                <div id="inner-witness-dir"></div>
+              </div>
+            </div>
+
+          </div><!-- /active-main -->
+
+          <!-- RIGHT RAIL -->
+          <aside class="active-rail">
+            <div class="rail-section-title">Witnesses &amp; SMEs</div>
+            <div id="rail-witnesses"></div>
+
+            <div class="divider"></div>
+            <div class="rail-section-title">Upcoming Deadlines</div>
+            <div class="rail-deadline-item"><span class="rail-deadline-name">M. Reyes depreciation reconciliation</span><span class="rail-deadline-date urgent">May 30</span></div>
+            <div class="rail-deadline-item"><span class="rail-deadline-name">D. Patel cost of capital workpapers</span><span class="rail-deadline-date urgent">May 29</span></div>
+            <div class="rail-deadline-item"><span class="rail-deadline-name">J. Patterson load forecast update</span><span class="rail-deadline-date urgent">Jun 1</span></div>
+            <div class="rail-deadline-item"><span class="rail-deadline-name">OPC Discovery Set 4 responses due</span><span class="rail-deadline-date">Jun 12</span></div>
+            <div class="rail-deadline-item"><span class="rail-deadline-name">Rebuttal testimony filing deadline</span><span class="rail-deadline-date">Jun 17</span></div>
+
+            <div class="divider"></div>
+            <div class="rail-section-title">AI Drafting Queue</div>
+            <div class="ai-queue-item" onclick="navigate('discovery')">
+              <div class="ai-queue-label">Discovery Response</div>
+              <div class="ai-queue-title">AG-DR-0089 — D. Patel cost of capital workpapers</div>
+            </div>
+            <div class="ai-queue-item" onclick="navigate('discovery')">
+              <div class="ai-queue-label">Discovery Response</div>
+              <div class="ai-queue-title">OPC-DR-0112 — J. Patterson capex forecast detail</div>
+            </div>
+            <div class="ai-queue-item" onclick="openTestimonyDirect('REB-03')">
+              <div class="ai-queue-label">Testimony Section</div>
+              <div class="ai-queue-title">REB-03 — Cost of capital rebuttal (In Draft)</div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="rail-section-title">Activity Log</div>
+            <ul id="activity-log"></ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ─────────────────── VIEW: DISCOVERY ─────────────────── -->
+      <section class="view" id="view-discovery">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Discovery Worklist</div>
+            <div class="section-subtitle">All intervenor data requests across active proceedings — click any row to open AI-drafted response editor</div>
+          </div>
+          <div class="section-actions">
+            <span id="dr-count" style="font-size:12px;color:var(--warm-grey);"></span>
+            <button class="btn btn-primary btn-sm" onclick="addAutoDraftedDR()">Generate AI Draft</button>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="discovery-toolbar">
+          <div class="filter-bar">
+            <span class="filter-pill active" data-filter="all">All Requests</span>
+            <span class="filter-pill" data-filter="open">Open</span>
+            <span class="filter-pill" data-filter="review">Internal Review</span>
+            <span class="filter-pill" data-filter="filed">Filed</span>
+            <span class="filter-pill" data-filter="auto">AI-Drafted</span>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>DR No.</th><th>Request</th><th>Party</th>
+              <th>Due Date</th><th>Status</th><th>Assigned</th><th>AI</th>
+            </tr></thead>
+            <tbody id="discovery-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ─────────────────── VIEW: COMMITMENTS ─────────────────── -->
+      <section class="view" id="view-commitments">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Commitment Register</div>
+            <div class="section-subtitle">All commitments made by Company witnesses across active proceedings — click to update status</div>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-secondary btn-sm">Add Commitment</button>
+            <button class="btn btn-primary btn-sm">Export Register</button>
+          </div>
+        </div>
+
+        <!-- Summary stats -->
+        <div class="commitments-summary">
+          <div class="commit-stat">
+            <div class="commit-stat-value" id="stat-open">—</div>
+            <div class="commit-stat-label">Open</div>
+          </div>
+          <div class="commit-stat">
+            <div class="commit-stat-value" id="stat-risk" style="color:var(--burgundy);">—</div>
+            <div class="commit-stat-label">At Risk</div>
+          </div>
+          <div class="commit-stat">
+            <div class="commit-stat-value" id="stat-complete">—</div>
+            <div class="commit-stat-label">Complete</div>
+          </div>
+          <div class="commit-stat">
+            <div class="commit-stat-value" id="stat-review">—</div>
+            <div class="commit-stat-label">Under Review</div>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead><tr>
+              <th>Commitment</th><th>Docket</th><th>Category</th>
+              <th>Status</th><th>Due Date</th><th>Responsible</th>
+            </tr></thead>
+            <tbody id="full-commitments-tbody"></tbody>
+          </table>
+          <div style="margin-top:12px;font-size:11.5px;color:var(--text-muted);">247 total commitments across active proceedings</div>
+        </div>
+      </section>
+
+      <!-- ─────────────────── VIEW: FILINGS CALENDAR ─────────────────── -->
+      <section class="view" id="view-calendar">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Filings Calendar</div>
+            <div class="section-subtitle">Deadlines and milestones across all active proceedings — color-coded by docket</div>
+          </div>
+        </div>
+
+        <!-- Calendar nav + legend -->
+        <div class="calendar-nav">
+          <button class="btn btn-secondary btn-sm" id="cal-prev">← Prev</button>
+          <div class="cal-month-label" id="cal-month-label">May 2026</div>
+          <button class="btn btn-secondary btn-sm" id="cal-next">Next →</button>
+          <div style="margin-left:24px;" class="cal-legend">
+            <div class="cal-legend-item"><div class="cal-event-dot tx" style="display:inline-block;"></div> PUC 25-1142 (Texas)</div>
+            <div class="cal-legend-item"><div class="cal-event-dot ny" style="display:inline-block;"></div> NYPSC 24-E-0982 (New York)</div>
+            <div class="cal-legend-item"><div class="cal-event-dot ca" style="display:inline-block;"></div> CPUC A.25-04-008 (California)</div>
+            <div class="cal-legend-item"><div class="cal-event-dot mt" style="display:inline-block;"></div> MT PSC 26-D-0047 (Montana)</div>
+          </div>
+        </div>
+
+        <div class="calendar-body">
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+      </section>
+
+      <!-- ─────────────────── VIEW: WITNESSES ─────────────────── -->
+      <section class="view" id="view-witnesses">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Witnesses &amp; Expert Directory</div>
+            <div class="section-subtitle">Company witnesses and subject matter experts across all active proceedings — click to expand profile and testimony drafts</div>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-secondary btn-sm">Export Directory</button>
+            <button class="btn btn-primary btn-sm">+ Add Witness</button>
+          </div>
+        </div>
+
+        <div class="witness-directory" id="witness-directory-full"></div>
+      </section>
+
+      <!-- ─────────────────── VIEW: REPORTS ─────────────────── -->
+      <section class="view" id="view-reports">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Reports</div>
+            <div class="section-subtitle">Regulatory affairs performance and compliance analytics</div>
+          </div>
+          <div class="section-actions">
+            <button class="btn btn-secondary btn-sm">Export PDF</button>
+          </div>
+        </div>
+
+        <div class="report-tabs">
+          <div class="report-tab active" data-report="status">Status Summary</div>
+          <div class="report-tab" data-report="aging">DR Aging Report</div>
+          <div class="report-tab" data-report="compliance">Testimony Compliance</div>
+          <div class="report-tab" data-report="risk">Risk Register</div>
+        </div>
+
+        <div id="report-content"></div>
+      </section>
+
+    </div><!-- /content-area -->
+  </div><!-- /main-area -->
+</div><!-- /app-shell -->
+
+
+<!-- ════════════════════════ MODALS ════════════════════════ -->
+
+<!-- Commitment Detail Modal -->
+<div class="modal-overlay" id="commitment-modal-overlay">
+  <div class="modal" id="commitment-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="cmod-commitment">Commitment Detail</div>
+        <div class="modal-subtitle" id="cmod-docket">Docket —</div>
+      </div>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid-2" style="margin-bottom:16px;">
+        <div class="field-group">
+          <div class="field-label">Category</div>
+          <div class="field-value" id="cmod-category">—</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Responsible Witness</div>
+          <div class="field-value" id="cmod-responsible">—</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Due Date</div>
+          <div class="field-value" id="cmod-due">—</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Current Status</div>
+          <span class="spill" id="cmod-status-pill">—</span>
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Description / Notes</div>
+        <div class="field-value" id="cmod-description" style="background:var(--cream);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-family:var(--font-serif);line-height:1.65;font-size:14px;">—</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Update Status</div>
+        <select class="field-select" id="cmod-status-select">
+          <option>Open</option>
+          <option>Under Review</option>
+          <option>At Risk</option>
+          <option>Complete</option>
+          <option>Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">Changes will update the commitment register</div>
+      <div class="modal-footer-right">
+        <button class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+        <button class="btn btn-primary" id="commit-status-save">Save Status</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Discovery Response Modal -->
+<div class="modal-overlay" id="dr-modal-overlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Discovery Response Editor</div>
+        <div class="modal-subtitle">
+          <strong id="drmod-id">—</strong> &nbsp;·&nbsp; <span id="drmod-party">—</span>
+          &nbsp;·&nbsp; Due: <span id="drmod-due">—</span>
+          &nbsp;&nbsp;<span class="spill" id="drmod-status">—</span>
+        </div>
+      </div>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="dr-modal-layout">
+        <div>
+          <div class="dr-col-label">Request</div>
+          <div class="dr-question-box" id="drmod-question"></div>
+          <div style="margin-top:16px;">
+            <div class="dr-col-label">Workpapers &amp; Supporting Exhibits</div>
+            <ul class="workpapers-list" id="drmod-workpapers"></ul>
+          </div>
+        </div>
+        <div>
+          <div class="dr-col-label">AI-Drafted Response <span class="badge-new">AI</span></div>
+          <div class="dr-response-editor" id="drmod-response" contenteditable="true"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">Review response before submission to internal review queue</div>
+      <div class="modal-footer-right">
+        <button class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+        <button class="btn btn-primary" id="dr-submit-btn">Submit for Internal Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Testimony Section Editor Modal -->
+<div class="modal-overlay" id="testimony-modal-overlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="tmod-section">Testimony Section</div>
+        <div class="modal-subtitle">
+          <span id="tmod-witness">—</span> &nbsp;·&nbsp; <span class="spill" id="tmod-status">—</span>
+        </div>
+      </div>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="dr-col-label" style="margin-bottom:8px;">Draft Text</div>
+      <div class="dr-response-editor" id="tmod-draft" contenteditable="true" style="min-height:320px;"></div>
+      <div style="margin-top:14px;font-size:12px;color:var(--warm-grey);">Edits are saved to the drafting workspace — final filing requires director approval</div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">Last edited by AI Drafting Agent</div>
+      <div class="modal-footer-right">
+        <button class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+        <button class="btn btn-primary" onclick="closeAllModals()">Save Draft</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Witness Profile Modal -->
+<div class="modal-overlay" id="witness-modal-overlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="witness-avatar-lg" id="wmod-avatar" style="width:46px;height:46px;font-size:15px;">—</div>
+        <div>
+          <div class="modal-title" id="wmod-name">—</div>
+          <div class="modal-subtitle" id="wmod-title">—</div>
+        </div>
+        <span class="spill" id="wmod-type" style="margin-left:8px;">—</span>
+      </div>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-label" style="margin-bottom:6px;">Background &amp; Qualifications</div>
+      <div class="witness-bio" id="wmod-bio"></div>
+      <div class="field-label" style="margin-bottom:6px;">Credentials</div>
+      <ul class="witness-credentials-list" id="wmod-credentials"></ul>
+      <div class="field-label" style="margin-top:20px;margin-bottom:8px;">Testimony Sections</div>
+      <div id="wmod-sections"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Filing Detail Modal -->
+<div class="modal-overlay" id="filing-modal-overlay">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="fmod-title">Filing Detail</div>
+        <div class="modal-subtitle"><span id="fmod-date">—</span> &nbsp;·&nbsp; <span class="spill" id="fmod-type-pill">—</span></div>
+      </div>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="field-group">
+        <div class="field-label">Proceeding</div>
+        <div class="field-value" id="fmod-proc">—</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Filing Type</div>
+        <div class="field-value" id="fmod-type">—</div>
+      </div>
+      <div class="field-group">
+        <div class="field-label">Description</div>
+        <div class="field-value" id="fmod-description" style="font-family:var(--font-serif);line-height:1.65;font-size:14px;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left"></div>
+      <div class="modal-footer-right">
+        <button class="btn btn-secondary" onclick="closeAllModals()">Close</button>
+        <button class="btn btn-primary">Open in Docket</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
 </html>
